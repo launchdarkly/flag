@@ -8,6 +8,8 @@ import (
 	"bufio"
 	"os"
 	"strings"
+
+	"github.com/iancoleman/strcase"
 )
 
 // EnvironmentPrefix defines a string that will be implicitely prefixed to a
@@ -45,11 +47,10 @@ func (f *FlagSet) ParseEnv(environ []string) error {
 			return f.failf("environment variable provided but not defined: %s", name)
 		}
 
-		envKey := strings.ToUpper(flag.Name)
+		envKey := strcase.ToScreamingSnake(flag.Name)
 		if f.envPrefix != "" {
 			envKey = f.envPrefix + "_" + envKey
 		}
-		envKey = strings.Replace(envKey, "-", "_", -1)
 
 		value, isSet := env[envKey]
 		if !isSet {
